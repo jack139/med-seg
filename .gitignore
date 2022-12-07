@@ -28,3 +28,4 @@ test/
 *.hdf5
 *.h5
 *.weights
+*.pth
