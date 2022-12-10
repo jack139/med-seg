@@ -9,7 +9,7 @@ from data import *
 
 steps_per_epoch = 1000
 epochs = 10
-input_size = (128,128,3)
+input_size = (512,512,3)
 
 train_path = '../data/DRIVE2004/training'
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
                         #horizontal_flip=True,
                         fill_mode='nearest')
     myGene = trainGenerator(4,train_path,'images','1st_manual_png',data_gen_args,
-        target_size=(128,128),save_to_dir = None)
+        target_size=input_size[:2],save_to_dir = None)
 
     model_checkpoint = ModelCheckpoint("unet_%d_%d.hdf5"%(epochs,steps_per_epoch), 
         monitor='loss',verbose=1, save_best_only=True)
@@ -40,10 +40,10 @@ if __name__ == '__main__':
     )
 
 else:
-    model = unet(input_size=input_size, pretrained_weights="unet_%d_%d.hdf5"%(epochs,steps_per_epoch))
+    model = unet(input_size=input_size, pretrained_weights="unet_10_1000.hdf5")
 
-    test_path = "../data/DRIVE2004/test"
+    test_path = "../data/DRIVE2004/test/images"
     testGene = testGenerator(test_path, target_size=input_size[:2])
     file_list = os.listdir(test_path)
     results = model.predict_generator(testGene,len(file_list),verbose=1)
-    saveResult("data/results",results,mask_num=5)
+    saveResult("../data/results",results,mask_num=5)

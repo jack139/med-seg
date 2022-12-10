@@ -67,8 +67,9 @@ def testGenerator(test_path,target_size = (256,256),as_gray = False):
 def saveResult(save_path,npyfile,mask_num=5,move=0):
     for i,item in enumerate(npyfile):
         img = item
-        #io.imsave(os.path.join(save_path,"predict_%d.png"%i),(img*255).astype(np.uint8))
+        io.imsave(os.path.join(save_path,"predict_%d.png"%i),(img*255).astype(np.uint8))
 
+        '''
         # 处理结果
         time_span = img.shape[0]
         for x in range(time_span):
@@ -111,3 +112,4 @@ def saveResult(save_path,npyfile,mask_num=5,move=0):
             img = new_img
 
         io.imsave(os.path.join(save_path,"adjust_%d.png"%i),(img*255).astype(np.uint8))
+        '''
