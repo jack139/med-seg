@@ -17,7 +17,7 @@ if __name__ == '__main__':
     # 新训练
     model = unet(input_size=input_size)
     # 继续训练
-    #model = unet(input_size=input_size, pretrained_weights="unet_10_1000_e3.hdf5")
+    #model = unet(input_size=input_size, pretrained_weights="unet_10_1000.hdf5")
 
 
     data_gen_args = dict(#rotation_range=0.2,
