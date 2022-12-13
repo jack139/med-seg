@@ -7,6 +7,7 @@ from model import *
 from data import *
 
 
+batch_size = 2
 steps_per_epoch = 1000
 epochs = 10
 input_size = (512,512,1)
@@ -28,7 +29,7 @@ if __name__ == '__main__':
                         zoom_range=0.05,
                         horizontal_flip=True,
                         fill_mode='nearest')
-    myGene = trainGenerator(2,train_path,'images','1st_manual_png',data_gen_args,
+    myGene = trainGenerator(batch_size,train_path,'images','1st_manual_png',data_gen_args,
         target_size=input_size[:2],save_to_dir = None)
 
     model_checkpoint = ModelCheckpoint("unet_%d_%d.hdf5"%(epochs,steps_per_epoch), 
