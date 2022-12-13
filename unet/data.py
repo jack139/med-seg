@@ -7,12 +7,14 @@ import glob
 import skimage.io as io
 import skimage.transform as trans
 
+#import imageio
 
 def adjustData(img,mask):
-    img = img / 255
-    mask = mask / 255
-    mask[mask > 0.5] = 1
-    mask[mask <= 0.5] = 0
+    if np.max(img) > 1:
+        img = img / 255
+        mask = mask / 255
+        mask[mask > 0.5] = 1
+        mask[mask <= 0.5] = 0
     return (img,mask)
 
 
@@ -60,12 +62,15 @@ def testGenerator(test_path,target_size = (256,256),as_gray = True):
         img = io.imread(os.path.join(test_path,i),as_gray = as_gray)
         img = img / 255
         img = trans.resize(img,target_size)
-        img = np.reshape(img,img.shape+(1,)) if as_gray else img
+        img = np.reshape(img,img.shape+(1,))
         img = np.reshape(img,(1,)+img.shape)
         yield img
 
 
 
-def saveResult(save_path,npyfile,mask_num=5,move=0):
-    for i,img in enumerate(npyfile):
-        io.imsave(os.path.join(save_path,"predict_%d.png"%i),(img*255).astype(np.uint8))
+def saveResult(save_path,npyfile):
+    for i,item in enumerate(npyfile):
+        img = item[:,:,0]
+        io.imsave(os.path.join(save_path,"predict_%d.png"%i),(img*255).astype(np.uint8), check_contrast=False)
+
+        #imageio.imwrite(os.path.join(save_path,"predict_%d.png"%i), (img*255).astype(np.uint8))

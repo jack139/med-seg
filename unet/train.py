@@ -22,12 +22,12 @@ if __name__ == '__main__':
 
 
     data_gen_args = dict(
-                        rotation_range=0.2,
-                        width_shift_range=0.05,
-                        height_shift_range=0.05,
-                        shear_range=0.05,
-                        zoom_range=0.05,
-                        horizontal_flip=True,
+                        #rotation_range=0.2,
+                        #width_shift_range=0.05,
+                        #height_shift_range=0.05,
+                        #shear_range=0.05,
+                        #zoom_range=0.05,
+                        #horizontal_flip=True,
                         fill_mode='nearest')
     myGene = trainGenerator(batch_size,train_path,'images','1st_manual_png',data_gen_args,
         target_size=input_size[:2],save_to_dir = None)
@@ -48,4 +48,4 @@ else:
     testGene = testGenerator(test_path, target_size=input_size[:2])
     file_list = os.listdir(test_path)
     results = model.predict_generator(testGene,len(file_list),verbose=1)
-    saveResult("../data/results",results,mask_num=5)
+    saveResult("../data/results",results)
