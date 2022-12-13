@@ -9,7 +9,7 @@ from data import *
 
 steps_per_epoch = 1000
 epochs = 10
-input_size = (512,512,3)
+input_size = (512,512,1)
 
 train_path = '../data/DRIVE2004/training'
 
@@ -20,14 +20,15 @@ if __name__ == '__main__':
     #model = unet(input_size=input_size, pretrained_weights="unet_10_1000.hdf5")
 
 
-    data_gen_args = dict(#rotation_range=0.2,
-                        #width_shift_range=0.05,
-                        #height_shift_range=0.05,
-                        #shear_range=0.05,
-                        #zoom_range=0.05,
-                        #horizontal_flip=True,
+    data_gen_args = dict(
+                        rotation_range=0.2,
+                        width_shift_range=0.05,
+                        height_shift_range=0.05,
+                        shear_range=0.05,
+                        zoom_range=0.05,
+                        horizontal_flip=True,
                         fill_mode='nearest')
-    myGene = trainGenerator(4,train_path,'images','1st_manual_png',data_gen_args,
+    myGene = trainGenerator(2,train_path,'images','1st_manual_png',data_gen_args,
         target_size=input_size[:2],save_to_dir = None)
 
     model_checkpoint = ModelCheckpoint("unet_%d_%d.hdf5"%(epochs,steps_per_epoch), 
