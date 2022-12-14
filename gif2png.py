@@ -5,8 +5,11 @@ from glob import glob
 import cv2
 from PIL import Image
 
-gif_path = "data/DRIVE2004/training/1st_manual"
-output_dir = "data/DRIVE2004/training/1st_manual_png"
+#gif_path = "data/DRIVE2004/training/1st_manual"
+#output_dir = "data/DRIVE2004/training/1st_manual_png"
+
+gif_path = "data/DRIVE2004/test/1st_manual"
+output_dir = "data/DRIVE2004/test/1st_manual_png"
 
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)

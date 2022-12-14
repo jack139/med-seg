@@ -10,13 +10,13 @@ from skimage.color import rgb2gray
 
 #import imageio
 
-def adjustData(img,mask):
+def adjustData(img, mask):
     if np.max(img) > 1:
         img = img / 255
         mask = mask / 255
-        mask[mask > 0.5] = 1
-        mask[mask <= 0.5] = 0
-    return (img,mask)
+    mask[mask > 0.5] = 1
+    mask[mask <= 0.5] = 0
+    return (img, mask)
 
 
 def trainGenerator(batch_size,train_path,image_folder,mask_folder,aug_dict,image_color_mode = "grayscale",
@@ -55,27 +55,35 @@ def trainGenerator(batch_size,train_path,image_folder,mask_folder,aug_dict,image
         yield (img,mask)
 
 
+def load_img(path, target_size, as_gray, is_mask=False):
+    #img = io.imread(path,as_gray = as_gray) # 对tiff不能直接读，需要转换
+    img = io.imread(path)
+    if as_gray:
+        img = rgb2gray(img)
 
-def testGenerator(test_path,target_size = (256,256),as_gray = True):
+    #img = img / 255
+    img, mask = adjustData(img, img.copy())
+
+    if is_mask:
+        img = mask
+
+    img = trans.resize(img,target_size)
+    img = np.reshape(img,img.shape+(1,))
+    img = np.reshape(img,(1,)+img.shape)
+    return img
+
+
+def testGenerator(test_path, target_size = (256,256), as_gray = True):
     file_list = os.listdir(test_path)
-    #file_list = sorted(file_list)
+    file_list = sorted(file_list)
     for i in file_list:
-        #img = io.imread(os.path.join(test_path,i),as_gray = as_gray) # 对tiff不能直接读，需要转换
-        img = io.imread(os.path.join(test_path,i))
-        if as_gray:
-            img = rgb2gray(img)
-
-        #img = img / 255
-        img, _ = adjustData(img,img)
-
-        img = trans.resize(img,target_size)
-        img = np.reshape(img,img.shape+(1,))
-        img = np.reshape(img,(1,)+img.shape)
+        img = load_img(os.path.join(test_path,i), target_size, as_gray)
         yield img
-
 
 
 def saveResult(save_path,npyfile):
     for i,item in enumerate(npyfile):
         img = item[:,:,0]
+        img[img > 0.5] = 1
+        img[img <= 0.5] = 0
         io.imsave(os.path.join(save_path,"predict_%d.png"%i),(img*255.0).astype(np.uint8), check_contrast=False)
