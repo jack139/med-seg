@@ -10,7 +10,7 @@ from data import *
 batch_size = 2
 steps_per_epoch = 1000
 epochs = 10
-input_size = (512,512,1)
+input_size = (128,128,1)
 
 train_path = '../data/DRIVE2004/training'
 
@@ -48,4 +48,4 @@ else:
     testGene = testGenerator(test_path, target_size=input_size[:2])
     file_list = os.listdir(test_path)
     results = model.predict_generator(testGene,len(file_list),verbose=1)
-    saveResult("../data/results",results)
+    saveResult("data/results",results)

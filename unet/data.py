@@ -6,6 +6,7 @@ import os
 import glob
 import skimage.io as io
 import skimage.transform as trans
+from skimage.color import rgb2gray
 
 #import imageio
 
@@ -59,8 +60,14 @@ def testGenerator(test_path,target_size = (256,256),as_gray = True):
     file_list = os.listdir(test_path)
     #file_list = sorted(file_list)
     for i in file_list:
-        img = io.imread(os.path.join(test_path,i),as_gray = as_gray)
-        img = img / 255
+        #img = io.imread(os.path.join(test_path,i),as_gray = as_gray) # 对tiff不能直接读，需要转换
+        img = io.imread(os.path.join(test_path,i))
+        if as_gray:
+            img = rgb2gray(img)
+
+        #img = img / 255
+        img, _ = adjustData(img,img)
+
         img = trans.resize(img,target_size)
         img = np.reshape(img,img.shape+(1,))
         img = np.reshape(img,(1,)+img.shape)
@@ -71,6 +78,4 @@ def testGenerator(test_path,target_size = (256,256),as_gray = True):
 def saveResult(save_path,npyfile):
     for i,item in enumerate(npyfile):
         img = item[:,:,0]
-        io.imsave(os.path.join(save_path,"predict_%d.png"%i),(img*255).astype(np.uint8), check_contrast=False)
-
-        #imageio.imwrite(os.path.join(save_path,"predict_%d.png"%i), (img*255).astype(np.uint8))
+        io.imsave(os.path.join(save_path,"predict_%d.png"%i),(img*255.0).astype(np.uint8), check_contrast=False)
