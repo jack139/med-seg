@@ -7,15 +7,20 @@ import glob
 import skimage.io as io
 import skimage.transform as trans
 from skimage.color import rgb2gray
+from copy import deepcopy
 
-#import imageio
+threshold = 0.1
 
 def adjustData(img, mask):
     if np.max(img) > 1:
         img = img / 255
+
+    if np.max(mask) > 1:
         mask = mask / 255
-    mask[mask > 0.5] = 1
-    mask[mask <= 0.5] = 0
+
+    mask[mask > threshold] = 1
+    mask[mask <= threshold] = 0
+
     return (img, mask)
 
 
@@ -60,16 +65,15 @@ def load_img(path, target_size, as_gray, is_mask=False):
     img = io.imread(path)
     if as_gray:
         img = rgb2gray(img)
+    img = trans.resize(img, target_size) # 调整尺寸
 
-    #img = img / 255
-    img, mask = adjustData(img, img.copy())
+    img, mask = adjustData(img, deepcopy(img))
 
     if is_mask:
         img = mask
 
-    img = trans.resize(img,target_size)
-    img = np.reshape(img,img.shape+(1,))
-    img = np.reshape(img,(1,)+img.shape)
+    img = np.reshape(img, img.shape+(1,))
+    img = np.reshape(img, (1,)+img.shape)
     return img
 
 

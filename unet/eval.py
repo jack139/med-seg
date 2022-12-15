@@ -6,17 +6,17 @@ import numpy as np
 import skimage.io as io
 from sklearn.metrics import roc_auc_score
 from tqdm import tqdm
-from data import load_img
+from data import load_img, threshold
 
 image_path = '../data/DRIVE2004/test/images'
 mask_path  = '../data/DRIVE2004/test/1st_manual_png'
 results_path = 'data/results_val'
 
-if not os.path.exists(results_path):
-    os.makedirs(results_path)
+#if not os.path.exists(results_path):
+#    os.makedirs(results_path)
 
 def load_image(filename, target_size, as_gray):
-    img = load_img(os.path.join(image_path,filename), target_size, as_gray)
+    img = load_img(os.path.join(image_path,filename), target_size, as_gray, is_mask=False)
     filename2, _ = os.path.splitext(filename) # 01_test.tif --> 01
     filename2 = filename2.split("_")[0]
     img2 = load_img(os.path.join(mask_path,f"{filename2}_manual1.png"), target_size, as_gray, is_mask=True)
@@ -69,11 +69,11 @@ def evaluate(model, target_size = (128,128), as_gray = True):
         img_true = img_true[0]
 
         img = img_pred[:,:,0]
-        img[img > 0.5] = 1
-        img[img <= 0.5] = 0
+        img[img > threshold] = 1
+        img[img <= threshold] = 0
 
-        #io.imsave(os.path.join(results_path,"%s_predict.png"%imagename),(img*255.0).astype(np.uint8), check_contrast=False)
-        #io.imsave(os.path.join(results_path,"%s_true.png"%imagename),(img_true[:,:,0]*255.0).astype(np.uint8), check_contrast=False)
+        io.imsave(os.path.join(results_path,"%s_predict.png"%imagename),(img*255.0).astype(np.uint8), check_contrast=False)
+        io.imsave(os.path.join(results_path,"%s_true.png"%imagename),(img_true[:,:,0]*255.0).astype(np.uint8), check_contrast=False)
 
         m = get_metrics(img, img_true[:,:,0])
         metrics += np.array(list(m.values())).astype(np.float32)
