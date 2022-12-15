@@ -9,18 +9,19 @@ from model import unet
 from data import trainGenerator, testGenerator, saveResult
 from eval import evaluate
 
+lr = 1e-4
 batch_size = 2
-steps_per_epoch = 100
+steps_per_epoch = 1000
 epochs = 30
-input_size = (128,128,1)
+input_size = (512,512,1)
 
 train_path = '../data/DRIVE2004/training'
 
 
 # 新训练
-#model = unet(input_size=input_size)
+model = unet(input_size=input_size, lr=lr)
 # 继续训练
-model = unet(input_size=input_size, pretrained_weights="unet_e28_iou_0.52031.weights")
+#model = unet(input_size=input_size, lr=lr, pretrained_weights="unet_e16_iou_0.62700.weights")
 
 
 class Evaluator(Callback):

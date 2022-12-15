@@ -23,13 +23,13 @@ def load_image(filename, target_size, as_gray):
     return img, img2
 
 
-def get_metrics(predict, target):
+def get_metrics(predict, target, epsilon=1e-10):
     predict_b = predict.flatten().astype(np.uint8)
     target = target.flatten().astype(np.uint8)
 
-    tp = (predict_b * target).sum()
+    tp = (predict_b * target).sum() + epsilon # epsilon 防止除数为0
     tn = ((1 - predict_b) * (1 - target)).sum()
-    fp = ((1 - target) * predict_b).sum()
+    fp = ((1 - target) * predict_b).sum() + epsilon
     fn = ((1 - predict_b) * target).sum()
     auc = roc_auc_score(target, predict_b)
     acc = (tp + tn) / (tp + fp + fn + tn)
@@ -72,6 +72,7 @@ def evaluate(model, target_size = (128,128), as_gray = True):
         img[img > threshold] = 1
         img[img <= threshold] = 0
 
+        io.imsave(os.path.join(results_path,"%s_test.png"%imagename),(img_test[0][:,:,0]*255.0).astype(np.uint8), check_contrast=False)
         io.imsave(os.path.join(results_path,"%s_predict.png"%imagename),(img*255.0).astype(np.uint8), check_contrast=False)
         io.imsave(os.path.join(results_path,"%s_true.png"%imagename),(img_true[:,:,0]*255.0).astype(np.uint8), check_contrast=False)
 

@@ -9,7 +9,7 @@ import skimage.transform as trans
 from skimage.color import rgb2gray
 from copy import deepcopy
 
-threshold = 0.1
+threshold = 0.5
 
 def adjustData(img, mask):
     if np.max(img) > 1:
@@ -88,6 +88,6 @@ def testGenerator(test_path, target_size = (256,256), as_gray = True):
 def saveResult(save_path,npyfile):
     for i,item in enumerate(npyfile):
         img = item[:,:,0]
-        img[img > 0.5] = 1
-        img[img <= 0.5] = 0
+        img[img > threshold] = 1
+        img[img <= threshold] = 0
         io.imsave(os.path.join(save_path,"predict_%d.png"%i),(img*255.0).astype(np.uint8), check_contrast=False)
