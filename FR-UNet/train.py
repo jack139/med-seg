@@ -1,6 +1,6 @@
 import argparse
 from bunch import Bunch
-from loguru import logger
+#from loguru import logger
 from ruamel.yaml import safe_load
 from torch.utils.data import DataLoader
 import models
@@ -23,9 +23,9 @@ def main(CFG, data_path, batch_size, with_val=False):
     train_loader = DataLoader(
         train_dataset, batch_size, shuffle=True, num_workers=16, pin_memory=True, drop_last=True)
 
-    logger.info('The patch number of train is %d' % len(train_dataset))
+    print('The patch number of train is %d' % len(train_dataset))
     model = get_instance(models, 'model', CFG)
-    logger.info(f'\n{model}\n')
+    print(f'\n{model}\n')
     loss = get_instance(losses, 'loss', CFG)
     trainer = Trainer(
         model=model,

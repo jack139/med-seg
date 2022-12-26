@@ -7,12 +7,12 @@ import numpy as np
 import torch.backends.cudnn as cudnn
 import torch.nn as nn
 import torchvision.transforms.functional as TF
-from loguru import logger
+#from loguru import logger
 from torch.utils import tensorboard
 from tqdm import tqdm
 from utils.helpers import dir_exists, get_instance, remove_files, double_threshold_iteration
 from utils.metrics import AverageMeter, get_metrics, get_metrics, count_connect_component
-import ttach as tta
+#import ttach as tta
 
 
 class Trainer:
@@ -40,9 +40,9 @@ class Trainer:
             self._train_epoch(epoch)
             if self.val_loader is not None and epoch % self.CFG.val_per_epochs == 0:
                 results = self._valid_epoch(epoch)
-                logger.info(f'## Info for epoch {epoch} ## ')
+                print(f'## Info for epoch {epoch} ## ')
                 for k, v in results.items():
-                    logger.info(f'{str(k):15s}: {v}')
+                    print(f'{str(k):15s}: {v}')
             if epoch % self.CFG.save_period == 0:
                 self._save_checkpoint(epoch)
 
@@ -88,7 +88,7 @@ class Trainer:
         self.lr_scheduler.step()
 
     def _valid_epoch(self, epoch):
-        logger.info('\n###### EVALUATION ######')
+        print('\n###### EVALUATION ######')
         self.model.eval()
         wrt_mode = 'val'
         self._reset_metrics()
@@ -133,7 +133,7 @@ class Trainer:
         }
         filename = os.path.join(self.checkpoint_dir,
                                 f'checkpoint-epoch{epoch}.pth')
-        logger.info(f'Saving a checkpoint: {filename} ...')
+        print(f'Saving a checkpoint: {filename} ...')
         torch.save(state, filename)
         return filename
 
